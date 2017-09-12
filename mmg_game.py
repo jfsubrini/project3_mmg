@@ -26,17 +26,21 @@ from mmg_classes import *
 pygame.init()
 
 # Game's locals for the size of the Maze
-SPRITE_SIDE = 15		# Number of sprites per side of the Maze
-SPRITE_SIZE = 40		# Size of the side of each sprite in pixels
-SIDE_SIZE = SPRITE_SIDE * SPRITE_SIZE	# Size of the Maze per side
+SPRITE_SIDE = 15		# Number of sprites per side of the Maze        # STAY HERE or in mmg_classes.py ?
+SPRITE_SIZE = 40		# Size of the side of each sprite in pixels     # STAY HERE or in mmg_classes.py ?
+SIDE_SIZE = SPRITE_SIDE * SPRITE_SIZE	# Size of the Maze per side     # STAY HERE or in mmg_classes.py ?
 
-# Opening of the screen with the Maze
+# Opening of the screen with the background
 screen = pygame.display.set_mode((SIDE_SIZE, SIDE_SIZE))
 pygame.display.set_caption("MacGyver Maze Game")	           # Title of the game
 FLOOR_IMAGE = pygame.image.load("images/floor.png").convert()  # Loading of the Maze's floor image
 
-# Loading of MacGyver
+# Creation of the instances of MacGyver, the Maze and the three objects
 macgyver = Agent()
+maze = Maze()
+needle = Objects()
+tube = Objects()
+potion = Objects()
 
 
 # GAME LOOP
@@ -59,10 +63,13 @@ while cont:
                 macgyver.move('up')
             elif event.key == K_DOWN:
                 macgyver.move('down')
-    # Blitting of the floor and MacGyver
+    # Blitting of the floor, the Maze and the three objects
     screen.blit(FLOOR_IMAGE, (0, 0))
-    Maze().display_maze(screen)
-    # Display new positions of MacGyver
+    maze.display_maze(screen)
+    screen.blit(needle.image_n, (0, 160))  # Change the tuple with NEEDLE_POS when random positionning is ready in mmg_classes.py
+    screen.blit(tube.image_t, (560, 120))  # Change the tuple with NEEDLE_POS when random positionning is ready in mmg_classes.py
+    screen.blit(potion.image_p, (280, 400))  # Change the tuple with NEEDLE_POS when random positionning is ready in mmg_classes.py
+    # Blitting of the new position of MacGyver
     screen.blit(macgyver.image, (macgyver.mg_x, macgyver.mg_y))
-    # refreshing of the Maze and all the objects
+    # Refreshing of the Maze and all the objects
     pygame.display.flip()
