@@ -25,15 +25,14 @@ from mmg_classes import *
 # Initialization of the PYGAME Library.
 pygame.init()
 
-# Game's locals for the size of the Maze.
-SPRITE_SIDE = 15		# Number of sprites per side of the Maze.       # STAY HERE or in mmg_classes.py ?
-SPRITE_SIZE = 40		# Size of the side of each sprite in pixels.     # STAY HERE or in mmg_classes.py ?
-SIDE_SIZE = SPRITE_SIDE * SPRITE_SIZE	# Size of the Maze per side.    # STAY HERE or in mmg_classes.py ?
-
 # Opening of the screen with the background
-screen = pygame.display.set_mode((SIDE_SIZE, SIDE_SIZE))
+screen = pygame.display.set_mode((Constants().SIDE_DIM, Constants().SIDE_DIM))
 pygame.display.set_caption("MacGyver Maze Game")	           # Title of the game.
 FLOOR_IMAGE = pygame.image.load("images/floor.png").convert()  # Loading of the Maze's floor image.
+
+# Sounds for the game
+#pygame.mixer.music.load("sounds/opening_theme.wav")
+#sound_move = pygame.mixer.Sound("sounds/move.wav") 
 
 # Creation of the instances of MacGyver, the Maze and the three objects.
 macgyver = Agent("images/macgyver.png")
@@ -57,12 +56,14 @@ while cont:
             # Keys to move MacGyver
             if event.key == K_RIGHT:
                 macgyver.move('right', maze)
+                #sound_move.play()
             elif event.key == K_LEFT:
                 macgyver.move('left', maze)
             elif event.key == K_UP:
                 macgyver.move('up', maze)
             elif event.key == K_DOWN:
                 macgyver.move('down', maze)
+    #pygame.mixer.music.play()
     # Blitting of the floor, the Maze and the three objects.
     screen.blit(FLOOR_IMAGE, (0, 0))
     maze.display_maze(screen)

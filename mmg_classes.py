@@ -6,6 +6,13 @@ import pygame
 from pygame.locals import *
 
 
+class Constants:
+    """ Game's locals for the size of the Maze """
+    SPRITE_NUM = 15        # Number of sprites per side of the Maze.
+    SPRITE_DIM = 40        # Dimension of the side of each sprite in pixels.
+    SIDE_DIM = SPRITE_DIM * SPRITE_NUM   # Dimension of the Maze per side.
+
+
 class Maze:
     """ Creating the matrix (list of list) based on the maze_1 file """ 
     def __init__(self):
@@ -25,10 +32,6 @@ class Maze:
         JAIL = pygame.image.load("images/jail.png").convert()        # Jail tile i.e. MacGyver's starting place.
         FREEDOM = pygame.image.load("images/freedom.png").convert()  # MacGyver's leaving point.
         MURDOC = pygame.image.load("images/murdoc.png").convert_alpha() # Murdoc's place i.e. freedom place.
-        # Game's locals for the size of the Maze.
-        SPRITE_SIDE = 15        # Number of sprites per side of the Maze.
-        SPRITE_SIZE = 40        # Size of the side of each sprite in pixels.
-        SIDE_SIZE = SPRITE_SIDE * SPRITE_SIZE   # Size of the Maze per side.
         # Browsing the lists in the matrix.
         line_number = 0
         for line in self.matrix:
@@ -36,8 +39,8 @@ class Maze:
             column_number = 0
             for sprite in line:
                 # Calculating the real position in pixels...
-                x = column_number * SPRITE_SIZE
-                y = line_number * SPRITE_SIZE
+                x = column_number * Constants().SPRITE_DIM
+                y = line_number * Constants().SPRITE_DIM
                 # ... and blitting the right sprites at the right places.
                 if sprite == 'w':                       # w for wall.
                     screen.blit(WALL, (x, y))
@@ -49,24 +52,23 @@ class Maze:
                 column_number += 1
             line_number += 1
 
+
 class Object:
     def __init__(self, image_file, my_maze):
         # Image attribut (by loading) for the 3 objects : needle, tube and potion.
         self.image = pygame.image.load(image_file).convert_alpha()
-       
-        # A REVOIR CE QUI SUIT
-        self.x = x
-        self.y = y
         # Find a place at random, in the Maze, for the three objects.
-        objects_number = 0
-        while objects_number < 3:
-            r = randint(0, len(my_maze.matrix) - 1)
-            if my_maze.matrix[self.x, self.y] == 'o':
-                my_maze.matrix[self.x, self.y] = '1'
-                objects_number += 1
-        ############
+        objects_num = 0
+        while objects_num < 3:                  
+            self.x = random.randint(0, len(my_maze.matrix) - 1)
+            self.y = random.randint(0, len(my_maze.matrix) - 1)
+            if my_maze.matrix[self.x][self.y] == 'o':
+                my_maze.matrix[self.x][self.y] = '1'
+                objects_num += 1
+        print(my_maze.matrix) ## A SUPPRIMER
+        #### Il fait 3 matrix car il y a 3 instances !
+        
 
-            
 class Agent:
     """ Classe permettant de créer le personnage de MacGyver """
     def __init__(self, image_mg):
@@ -80,20 +82,16 @@ class Agent:
  
     def move(self, direction, my_maze):
         """ Method for MacGyver's moves """
-        # Game's locals for the size of the Maze.
-        SPRITE_SIDE = 15        # Number of sprites per side of the Maze.
-        SPRITE_SIZE = 40        # Size of the side of each sprite in pixels.
-        SIDE_SIZE = SPRITE_SIDE * SPRITE_SIZE   # Size of the Maze per side.
         # Move to the right.
         if direction == 'right':
             # To avoid being out of screen.
-            if self.mg_pos_x < (SPRITE_SIDE - 1):
+            if self.mg_pos_x < (Constants().SPRITE_NUM - 1):
                 # Checking for the wall.
                 if my_maze.matrix[self.mg_pos_y][self.mg_pos_x + 1] != 'w':
                     # Move for one sprite.
                     self.mg_pos_x += 1
                     # Calculation of the position in pixel.
-                    self.mg_x = self.mg_pos_x * SPRITE_SIZE
+                    self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
                     # Checking presence of an object or freedom-Murdoc's sprite.
                     #freedom((self.mg_x, self.mg_y))
                     #collect((self.mg_x, self.mg_y))
@@ -106,7 +104,7 @@ class Agent:
             if self.mg_pos_x > 0:
                 if my_maze.matrix[self.mg_pos_y][self.mg_pos_x - 1] != 'w':
                     self.mg_pos_x -= 1
-                    self.mg_x = self.mg_pos_x * SPRITE_SIZE
+                    self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
                     #freedom((self.mg_x, self.mg_y))
                     #collect((self.mg_x, self.mg_y))
                 #else:
@@ -118,7 +116,7 @@ class Agent:
             if self.mg_pos_y > 0:
                 if my_maze.matrix[self.mg_pos_y - 1][self.mg_pos_x] != 'w':
                     self.mg_pos_y -= 1
-                    self.mg_y = self.mg_pos_y * SPRITE_SIZE
+                    self.mg_y = self.mg_pos_y * Constants().SPRITE_DIM
                     #freedom((self.mg_x, self.mg_y))
                     #collect((self.mg_x, self.mg_y))
                 #else:
@@ -127,10 +125,10 @@ class Agent:
                 #send the sound wall.wav when hitting the border of the Maze.
         # Move down
         if direction == 'down':
-            if self.mg_pos_y < (SPRITE_SIDE - 1):
+            if self.mg_pos_y < (Constants().SPRITE_NUM - 1):
                 if my_maze.matrix[self.mg_pos_y + 1][self.mg_pos_x] != 'w':
                     self.mg_pos_y += 1
-                    self.mg_y = self.mg_pos_y * SPRITE_SIZE
+                    self.mg_y = self.mg_pos_y * Constants().SPRITE_DIM
                     #freedom((self.mg_x, self.mg_y))
                     #collect((self.mg_x, self.mg_y))
                 #else:
@@ -138,7 +136,7 @@ class Agent:
             #else:
                 #send the sound wall.wav when hitting the border of the Maze.
 
-#######
+####### A REVOIR
     #def collect(self, mg_x, mg_y):
         #objects_collected = 0
         #if (mg_x, mg_y) == '1' in the matrix:
