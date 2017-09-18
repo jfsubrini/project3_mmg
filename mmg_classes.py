@@ -54,47 +54,63 @@ class Maze:
 
 
 class Object:
+    """ Class to create the three objects for MacGyver to collect """
     def __init__(self, image_file, my_maze):
         # Image attribut (by loading) for the 3 objects : needle, tube and potion.
-        self.image = pygame.image.load(image_file).convert_alpha()
-        # Find a place at random, in the Maze, for the three objects.
-        objects_num = 0
-        while objects_num < 3:                  
+        self.image_o = pygame.image.load(image_file).convert_alpha()
+        # Find a place at random, in the Maze, for each object.
+        number = 0
+        while number < 1:                  
             self.x = random.randint(0, len(my_maze.matrix) - 1)
             self.y = random.randint(0, len(my_maze.matrix) - 1)
-            if my_maze.matrix[self.x][self.y] == 'o':
-                my_maze.matrix[self.x][self.y] = '1'
-                objects_num += 1
-        print(my_maze.matrix) ## A SUPPRIMER
-        #### Il fait 3 matrix car il y a 3 instances !
-        
+            if my_maze.matrix[self.y][self.x] == 'o':
+                my_maze.matrix[self.y][self.x] = '1'
+                number += 1
+
 
 class Agent:
-    """ Classe permettant de créer le personnage de MacGyver """
+    """ Class to create MacGyver """
     def __init__(self, image_mg):
         # Loading the image of MacGyver.
         self.image = pygame.image.load(image_mg).convert_alpha()
         # MacGyver's position in the Maze in sprites and in pixels.
-        self.mg_pos_x = 0#find the index of 'j' in the matrix   # sprites x position of the jail in the Maze.
-        self.mg_pos_y = 0#find the index of 'j' in the matrix   # sprites y position of the jail in the Maze.
-        self.mg_x = 0#... * SIDE_SIZE          # sprites x position of the jail in the Maze in pixels.
-        self.mg_y = 0#... * SIDE_SIZE          # sprites y position of the jail in the Maze in pixels.
+        self.mg_pos_x = 0 #JAIL(x)
+        self.mg_pos_y = 0 #JAIL(y)
+        self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
+        self.mg_y = self.mg_pos_y * Constants().SPRITE_DIM
  
     def move(self, direction, my_maze):
         """ Method for MacGyver's moves """
         # Move to the right.
+        objects_collected = 0
         if direction == 'right':
             # To avoid being out of screen.
             if self.mg_pos_x < (Constants().SPRITE_NUM - 1):
                 # Checking for the wall.
                 if my_maze.matrix[self.mg_pos_y][self.mg_pos_x + 1] != 'w':
-                    # Move for one sprite.
-                    self.mg_pos_x += 1
-                    # Calculation of the position in pixel.
-                    self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
-                    # Checking presence of an object or freedom-Murdoc's sprite.
-                    #freedom((self.mg_x, self.mg_y))
-                    #collect((self.mg_x, self.mg_y))
+                    # Checking the presence of an object.
+                    if my_maze.matrix[self.mg_pos_y][self.mg_pos_x + 1] == '1':
+                        # Move for one sprite.
+                        self.mg_pos_x += 1
+                        # Calculation of the position in pixel.
+                        self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
+                        # Cancelling the object by replacing the '1' by an 'o' in the matrix
+                        my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = 'o'
+                        # Counting the collected objects
+                        objects_collected += 1
+                    elif my_maze.matrix[self.mg_pos_y][self.mg_pos_x + 1] == 'f':
+                        self.mg_pos_x += 1
+                        self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
+                        pass
+                        # Checking how many objects MacGyver collected when on the freedom sprite
+                        if objects_collected == 3:
+                            pass
+                            # Murdoc meurt et le jeu s'arrête, MacGyver gagne.
+                        #else:
+                            # MacGyver meurt et le jeu s'arrête.
+                    else:
+                        self.mg_pos_x += 1
+                        self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
                 #else:
                     #send the sound wall.wav when hitting a wall.
             #else:
@@ -103,10 +119,23 @@ class Agent:
         if direction == 'left':
             if self.mg_pos_x > 0:
                 if my_maze.matrix[self.mg_pos_y][self.mg_pos_x - 1] != 'w':
-                    self.mg_pos_x -= 1
-                    self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
-                    #freedom((self.mg_x, self.mg_y))
-                    #collect((self.mg_x, self.mg_y))
+                    if my_maze.matrix[self.mg_pos_y][self.mg_pos_x - 1] == '1':
+                        self.mg_pos_x -= 1
+                        self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
+                        my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = 'o'
+                        objects_collected += 1
+                    elif my_maze.matrix[self.mg_pos_y][self.mg_pos_x - 1] == 'f':
+                        self.mg_pos_x -= 1
+                        self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
+                        pass
+                        if objects_collected == 3:
+                            pass
+                            # Murdoc meurt et le jeu s'arrête, MacGyver gagne.
+                        #else:
+                            # MacGyver meurt et le jeu s'arrête.
+                    else:
+                        self.mg_pos_x -= 1
+                        self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
                 #else:
                     #send the sound wall.wav when hitting a wall.
             #else:
@@ -115,10 +144,23 @@ class Agent:
         if direction == 'up':
             if self.mg_pos_y > 0:
                 if my_maze.matrix[self.mg_pos_y - 1][self.mg_pos_x] != 'w':
-                    self.mg_pos_y -= 1
-                    self.mg_y = self.mg_pos_y * Constants().SPRITE_DIM
-                    #freedom((self.mg_x, self.mg_y))
-                    #collect((self.mg_x, self.mg_y))
+                    if my_maze.matrix[self.mg_pos_y - 1][self.mg_pos_x] == '1':
+                        self.mg_pos_y -= 1
+                        self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
+                        my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = 'o'
+                        objects_collected += 1
+                    elif my_maze.matrix[self.mg_pos_y - 1][self.mg_pos_x] == 'f':
+                        self.mg_pos_y -= 1
+                        self.mg_y = self.mg_pos_y * Constants().SPRITE_DIM
+                        pass
+                        if objects_collected == 3:
+                            pass
+                            # Murdoc meurt et le jeu s'arrête, MacGyver gagne.
+                        #else:
+                            # MacGyver meurt et le jeu s'arrête.
+                    else:
+                        self.mg_pos_y -= 1
+                        self.mg_y = self.mg_pos_y * Constants().SPRITE_DIM
                 #else:
                     #send the sound wall.wav when hitting a wall.
             #else:
@@ -127,27 +169,27 @@ class Agent:
         if direction == 'down':
             if self.mg_pos_y < (Constants().SPRITE_NUM - 1):
                 if my_maze.matrix[self.mg_pos_y + 1][self.mg_pos_x] != 'w':
-                    self.mg_pos_y += 1
-                    self.mg_y = self.mg_pos_y * Constants().SPRITE_DIM
-                    #freedom((self.mg_x, self.mg_y))
-                    #collect((self.mg_x, self.mg_y))
+                    if my_maze.matrix[self.mg_pos_y + 1][self.mg_pos_x] == '1':
+                        self.mg_pos_y += 1
+                        self.mg_y = self.mg_pos_y * Constants().SPRITE_DIM
+                        my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = 'o'
+                        objects_collected += 1
+                    elif my_maze.matrix[self.mg_pos_y + 1][self.mg_pos_x] == 'f':
+                        self.mg_pos_y += 1
+                        self.mg_y = self.mg_pos_y * Constants().SPRITE_DIM
+                        pass
+                        if objects_collected == 3:
+                            pass
+                            # Murdoc meurt et le jeu s'arrête, MacGyver gagne.
+                        #else:
+                            # MacGyver meurt et le jeu s'arrête.
+                    else:
+                        self.mg_pos_y += 1
+                        self.mg_y = self.mg_pos_y * Constants().SPRITE_DIM
                 #else:
                     #send the sound wall.wav when hitting a wall.
             #else:
                 #send the sound wall.wav when hitting the border of the Maze.
+        print(objects_collected)
 
-####### A REVOIR
-    #def collect(self, mg_x, mg_y):
-        #objects_collected = 0
-        #if (mg_x, mg_y) == '1' in the matrix:
-            #matrix[x,y] = mg
-            #objects_collected += 1
 
-    #def freedom(self):
-        #if (mg_pos_x, mg_pos_y) == 'f' dans la matrix:
-            #if objects_collected == 3:
-                #pass
-                # Murdoc meurt et le jeu s'arrête, MacGyver gagne.
-            #else:
-                #pass
-            	# MacGyver meurt et le jeu s'arrête.

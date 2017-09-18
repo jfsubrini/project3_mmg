@@ -31,8 +31,8 @@ pygame.display.set_caption("MacGyver Maze Game")	           # Title of the game.
 FLOOR_IMAGE = pygame.image.load("images/floor.png").convert()  # Loading of the Maze's floor image.
 
 # Sounds for the game
-#pygame.mixer.music.load("sounds/opening_theme.wav")
-#sound_move = pygame.mixer.Sound("sounds/move.wav") 
+#pygame.mixer.music.load("sounds/opening_theme.mp3")
+#sound_move = pygame.mixer.Sound("sounds/move.mov") 
 
 # Creation of the instances of MacGyver, the Maze and the three objects.
 macgyver = Agent("images/macgyver.png")
@@ -56,6 +56,7 @@ while cont:
             # Keys to move MacGyver
             if event.key == K_RIGHT:
                 macgyver.move('right', maze)
+                #pygame.mixer.music.play()   # augmenter le rythme : trop lent ?!?
                 #sound_move.play()
             elif event.key == K_LEFT:
                 macgyver.move('left', maze)
@@ -67,9 +68,9 @@ while cont:
     # Blitting of the floor, the Maze and the three objects.
     screen.blit(FLOOR_IMAGE, (0, 0))
     maze.display_maze(screen)
-    screen.blit(needle.image, (needle.x, needle.y))  # Change the tuple with NEEDLE_POS when random positionning is ready in mmg_classes.py
-    screen.blit(tube.image, (tube.x, tube.y))  # Change the tuple with NEEDLE_POS when random positionning is ready in mmg_classes.py
-    screen.blit(potion.image, (potion.x, potion.y))  # Change the tuple with NEEDLE_POS when random positionning is ready in mmg_classes.py
+    screen.blit(needle.image_o, (needle.x * Constants().SPRITE_DIM, needle.y * Constants().SPRITE_DIM))
+    screen.blit(tube.image_o, (tube.x * Constants().SPRITE_DIM, tube.y * Constants().SPRITE_DIM))
+    screen.blit(potion.image_o, (potion.x * Constants().SPRITE_DIM, potion.y * Constants().SPRITE_DIM))
     # Blitting of the new position of MacGyver.
     screen.blit(macgyver.image, (macgyver.mg_x, macgyver.mg_y))
     # Refreshing of the Maze and all the objects.
