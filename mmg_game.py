@@ -9,7 +9,7 @@ collect three objects in the maze, and find the way out
 after killing Murdoc, the prison guard.
 
 Python's Scripts
-Files : mmg_game.py, mmg_classes.py, maze_1 and 10 images y 5 sounds.
+Files : mmg_game.py, mmg_classes.py, maze_1 and 9 images y 5 sounds.
 
 Copyright Jean-François Subrini, student DA Python at OpenClassrooms.
 """
@@ -47,7 +47,7 @@ cont = 1
 # INFINITE LOOP
 while cont:
     # Slowdown the game loop.
-    pygame.time.Clock().tick(40)
+    pygame.time.Clock().tick(20)
     for event in pygame.event.get():
         # Close the game by closing the window game or typing 'escape'.
         if event.type == QUIT or (event.type == KEYDOWN and event.key == K_ESCAPE):
@@ -75,7 +75,16 @@ while cont:
         screen.blit(tube.image_o, (tube.x * Constants.SPRITE_DIM, tube.y * Constants.SPRITE_DIM))
     if maze.matrix[potion.y][potion.x] == '1':
         screen.blit(potion.image_o, (potion.x * Constants.SPRITE_DIM, potion.y * Constants.SPRITE_DIM))
-    # Blitting of the new position of MacGyver.
-    screen.blit(macgyver.image, (macgyver.mg_x, macgyver.mg_y))
+    # Blitting of the new position of MacGyver
+    if maze.matrix[macgyver.mg_pos_y][macgyver.mg_pos_x] != '2':   # When MacGyver isn't at the exit gate (Murdoc's place) without the 3 objects collected.
+        screen.blit(macgyver.image, (macgyver.mg_x + 5, macgyver.mg_y))
     # Refreshing of the Maze and all the objects.
     pygame.display.flip()
+    # End of the game : Game over.
+    if maze.matrix[macgyver.mg_pos_y][macgyver.mg_pos_x] == '2':
+        pygame.time.wait(4000)
+        cont = 0
+    # End of the game : Victory.
+    elif maze.matrix[macgyver.mg_pos_y][macgyver.mg_pos_x] == 'a':
+        pygame.time.wait(4000)
+        cont = 0

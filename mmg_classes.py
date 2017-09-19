@@ -42,13 +42,15 @@ class Maze:
                 x = column_number * Constants.SPRITE_DIM
                 y = line_number * Constants.SPRITE_DIM
                 # ... and blitting the right sprites at the right places.
-                if sprite == 'w':                       # w for wall.
+                if sprite == 'w':                     # 'w' for wall.
                     screen.blit(WALL, (x, y))
-                elif sprite == 'j':                     # j for jail i.e. place of departure.
+                elif sprite == 'j':                   # 'j' for jail i.e. place of departure.
                     screen.blit(JAIL, (x, y))
-                elif sprite == 'f':                     # f for freedom i.e.  place of arrival.
+                elif sprite == 'f' or sprite == '2':  # 'f' (freedom) i.e. place of arrival, and '2' when MacGyver comes without 3 objects.
                     screen.blit(FREEDOM, (x, y))
                     screen.blit(MURDOC, (x + 4, y + 2))
+                elif sprite == 'a':                   # 'a' i.e. arrival place without Murdoc (who is dead !).
+                    screen.blit(FREEDOM, (x, y))
                 column_number += 1
             line_number += 1
 
@@ -107,17 +109,15 @@ class Agent:
                         pass
                         # Checking how many objects MacGyver collected when on the freedom sprite.
                         if Agent.objects_collected == 3:
-                            print("Victoire")
-                            # Murdoc meurt et le jeu s'arrête, MacGyver gagne.
-                            #screen.blit(Maze.MURDOC.dead, (macgyver.mg_x, macgyver.mg_y))
+                            # Murdoc dies and disappear, MacGyver wins.
+                            my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = 'a'
                             # Sending the sound freedom.m4a for MacGyver's victory.
                             #pygame.mixer.Sound("sounds/freedom.m4a").play()
                         else:
-                            # MacGyver meurt et le jeu s'arrête.
+                            # MacGyver dies and disappear, Murdoc stays and wins.
+                            my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = '2'
                             # Sending the sound death.m4a for MacGyver's failure.
                             #pygame.mixer.Sound("sounds/failure.m4a").play()
-                            print("Perdu")
-                            #screen.blit(macgyver.dead, (macgyver.mg_x, macgyver.mg_y))
                     else:
                         self.mg_pos_x += 1
                         self.mg_x = self.mg_pos_x * Constants.SPRITE_DIM
@@ -144,11 +144,11 @@ class Agent:
                         self.mg_x = self.mg_pos_x * Constants.SPRITE_DIM
                         pass
                         if Agent.objects_collected == 3:
-                            print("Victoire")
+                            my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = 'a'
                             #pygame.mixer.Sound("sounds/freedom.m4a").play()
                         else:
-                            print("Perdu")
                             #pygame.mixer.Sound("sounds/failure.m4a").play()
+                            my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = '2'
                     else:
                         self.mg_pos_x -= 1
                         self.mg_x = self.mg_pos_x * Constants.SPRITE_DIM
@@ -174,11 +174,11 @@ class Agent:
                         self.mg_y = self.mg_pos_y * Constants.SPRITE_DIM
                         pass
                         if Agent.objects_collected == 3:
-                            print("Victoire")
+                            my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = 'a'
                             #pygame.mixer.Sound("sounds/freedom.m4a").play()
                         else:
-                            print("Perdu")
                             #pygame.mixer.Sound("sounds/failure.m4a").play()
+                            my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = '2'
                     else:
                         self.mg_pos_y -= 1
                         self.mg_y = self.mg_pos_y * Constants.SPRITE_DIM
@@ -203,11 +203,11 @@ class Agent:
                         self.mg_y = self.mg_pos_y * Constants.SPRITE_DIM
                         pass
                         if Agent.objects_collected == 3:
-                            print("Victoire")
+                            my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = 'a'
                             #pygame.mixer.Sound("sounds/freedom.m4a").play()
                         else:
-                            print("Perdu")
                             #pygame.mixer.Sound("sounds/failure.m4a").play()
+                            my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = '2'
                     else:
                         self.mg_pos_y += 1
                         self.mg_y = self.mg_pos_y * Constants.SPRITE_DIM
