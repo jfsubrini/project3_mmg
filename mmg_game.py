@@ -9,7 +9,7 @@ collect three objects in the maze, and find the way out
 after killing Murdoc, the prison guard.
 
 Python's Scripts
-Files : mmg_game.py, mmg_classes.py, maze_1 and 10 images y 6 sounds.
+Files : mmg_game.py, mmg_classes.py, maze_1 and 10 images y 5 sounds.
 
 Copyright Jean-François Subrini, student DA Python at OpenClassrooms.
 """
@@ -26,7 +26,7 @@ from mmg_classes import *
 pygame.init()
 
 # Opening of the screen with the background
-screen = pygame.display.set_mode((Constants().SIDE_DIM, Constants().SIDE_DIM))
+screen = pygame.display.set_mode((Constants.SIDE_DIM, Constants.SIDE_DIM))
 pygame.display.set_caption("MacGyver Maze Game")	           # Title of the game.
 FLOOR_IMAGE = pygame.image.load("images/floor.png").convert()  # Loading of the Maze's floor image.
 
@@ -68,9 +68,13 @@ while cont:
     # Blitting of the floor, the Maze and the three objects.
     screen.blit(FLOOR_IMAGE, (0, 0))
     maze.display_maze(screen)
-    screen.blit(needle.image_o, (needle.x * Constants().SPRITE_DIM, needle.y * Constants().SPRITE_DIM))
-    screen.blit(tube.image_o, (tube.x * Constants().SPRITE_DIM, tube.y * Constants().SPRITE_DIM))
-    screen.blit(potion.image_o, (potion.x * Constants().SPRITE_DIM, potion.y * Constants().SPRITE_DIM))
+    # Display of the three objects at their random position sorted out in the module mmg_classes.py
+    if maze.matrix[needle.y][needle.x] == '1':
+        screen.blit(needle.image_o, (needle.x * Constants.SPRITE_DIM, needle.y * Constants.SPRITE_DIM))
+    if maze.matrix[tube.y][tube.x] == '1':
+        screen.blit(tube.image_o, (tube.x * Constants.SPRITE_DIM, tube.y * Constants.SPRITE_DIM))
+    if maze.matrix[potion.y][potion.x] == '1':
+        screen.blit(potion.image_o, (potion.x * Constants.SPRITE_DIM, potion.y * Constants.SPRITE_DIM))
     # Blitting of the new position of MacGyver.
     screen.blit(macgyver.image, (macgyver.mg_x, macgyver.mg_y))
     # Refreshing of the Maze and all the objects.

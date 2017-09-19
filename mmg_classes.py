@@ -39,8 +39,8 @@ class Maze:
             column_number = 0
             for sprite in line:
                 # Calculating the real position in pixels...
-                x = column_number * Constants().SPRITE_DIM
-                y = line_number * Constants().SPRITE_DIM
+                x = column_number * Constants.SPRITE_DIM
+                y = line_number * Constants.SPRITE_DIM
                 # ... and blitting the right sprites at the right places.
                 if sprite == 'w':                       # w for wall.
                     screen.blit(WALL, (x, y))
@@ -70,22 +70,23 @@ class Object:
 
 class Agent:
     """ Class to create MacGyver """
+    objects_collected = 0
     def __init__(self, image_mg):
         # Loading the image of MacGyver.
         self.image = pygame.image.load(image_mg).convert_alpha()
+        self.dead = pygame.image.load("images/dead.png").convert_alpha()
         # MacGyver's position in the Maze in sprites and in pixels.
-        self.mg_pos_x = 0 #JAIL(x)
-        self.mg_pos_y = 0 #JAIL(y)
-        self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
-        self.mg_y = self.mg_pos_y * Constants().SPRITE_DIM
+        self.mg_pos_x = 0 # 
+        self.mg_pos_y = 0 # self.matrix.index('j')
+        self.mg_x = self.mg_pos_x * Constants.SPRITE_DIM
+        self.mg_y = self.mg_pos_y * Constants.SPRITE_DIM
  
     def move(self, direction, my_maze):
         """ Method for MacGyver's moves """
         # Move to the right.
-        objects_collected = 0
         if direction == 'right':
             # To avoid being out of screen.
-            if self.mg_pos_x < (Constants().SPRITE_NUM - 1):
+            if self.mg_pos_x < (Constants.SPRITE_NUM - 1):
                 # Checking for the wall.
                 if my_maze.matrix[self.mg_pos_y][self.mg_pos_x + 1] != 'w':
                     # Checking the presence of an object.
@@ -93,103 +94,126 @@ class Agent:
                         # Move for one sprite.
                         self.mg_pos_x += 1
                         # Calculation of the position in pixel.
-                        self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
-                        # Cancelling the object by replacing the '1' by an 'o' in the matrix
+                        self.mg_x = self.mg_pos_x * Constants.SPRITE_DIM
+                        # Cancelling the object by replacing the '1' by an 'o' in the matrix.
                         my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = 'o'
-                        # Counting the collected objects
-                        objects_collected += 1
+                        # Sending the sound collect.m4a when an object is collected by MacGyver.
+                        #pygame.mixer.Sound("sounds/collect.m4a").play()
+                        # Adding a new collected object
+                        Agent.objects_collected += 1
                     elif my_maze.matrix[self.mg_pos_y][self.mg_pos_x + 1] == 'f':
                         self.mg_pos_x += 1
-                        self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
+                        self.mg_x = self.mg_pos_x * Constants.SPRITE_DIM
                         pass
-                        # Checking how many objects MacGyver collected when on the freedom sprite
-                        if objects_collected == 3:
-                            pass
+                        # Checking how many objects MacGyver collected when on the freedom sprite.
+                        if Agent.objects_collected == 3:
+                            print("Victoire")
                             # Murdoc meurt et le jeu s'arrête, MacGyver gagne.
-                        #else:
+                            #screen.blit(Maze.MURDOC.dead, (macgyver.mg_x, macgyver.mg_y))
+                            # Sending the sound freedom.m4a for MacGyver's victory.
+                            #pygame.mixer.Sound("sounds/freedom.m4a").play()
+                        else:
                             # MacGyver meurt et le jeu s'arrête.
+                            # Sending the sound death.m4a for MacGyver's failure.
+                            #pygame.mixer.Sound("sounds/failure.m4a").play()
+                            print("Perdu")
+                            #screen.blit(macgyver.dead, (macgyver.mg_x, macgyver.mg_y))
                     else:
                         self.mg_pos_x += 1
-                        self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
-                #else:
-                    #send the sound wall.wav when hitting a wall.
-            #else:
-                #send the sound wall.wav when hitting the border of the Maze.
+                        self.mg_x = self.mg_pos_x * Constants.SPRITE_DIM
+                else:
+                    # Sending the sound wall.m4a when hitting a wall.
+                    #pygame.mixer.Sound("sounds/wall.m4a").play()
+                    pass
+            else:
+                # Sending the sound wall.m4a when hitting the border of the Maze.
+                #pygame.mixer.Sound("sounds/wall.m4a").play()
+                pass
         # Move to the left
         if direction == 'left':
             if self.mg_pos_x > 0:
                 if my_maze.matrix[self.mg_pos_y][self.mg_pos_x - 1] != 'w':
                     if my_maze.matrix[self.mg_pos_y][self.mg_pos_x - 1] == '1':
                         self.mg_pos_x -= 1
-                        self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
+                        self.mg_x = self.mg_pos_x * Constants.SPRITE_DIM
                         my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = 'o'
-                        objects_collected += 1
+                        #pygame.mixer.Sound("sounds/collect.m4a").play()
+                        Agent.objects_collected += 1
                     elif my_maze.matrix[self.mg_pos_y][self.mg_pos_x - 1] == 'f':
                         self.mg_pos_x -= 1
-                        self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
+                        self.mg_x = self.mg_pos_x * Constants.SPRITE_DIM
                         pass
-                        if objects_collected == 3:
-                            pass
-                            # Murdoc meurt et le jeu s'arrête, MacGyver gagne.
-                        #else:
-                            # MacGyver meurt et le jeu s'arrête.
+                        if Agent.objects_collected == 3:
+                            print("Victoire")
+                            #pygame.mixer.Sound("sounds/freedom.m4a").play()
+                        else:
+                            print("Perdu")
+                            #pygame.mixer.Sound("sounds/failure.m4a").play()
                     else:
                         self.mg_pos_x -= 1
-                        self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
-                #else:
-                    #send the sound wall.wav when hitting a wall.
-            #else:
-                #send the sound wall.wav when hitting the border of the Maze.
+                        self.mg_x = self.mg_pos_x * Constants.SPRITE_DIM
+                else:
+                    #pygame.mixer.Sound("sounds/wall.m4a").play()
+                    pass
+            else:
+                #pygame.mixer.Sound("sounds/wall.m4a").play()
+                pass
+
         # Move up
         if direction == 'up':
             if self.mg_pos_y > 0:
                 if my_maze.matrix[self.mg_pos_y - 1][self.mg_pos_x] != 'w':
                     if my_maze.matrix[self.mg_pos_y - 1][self.mg_pos_x] == '1':
                         self.mg_pos_y -= 1
-                        self.mg_x = self.mg_pos_x * Constants().SPRITE_DIM
+                        self.mg_x = self.mg_pos_x * Constants.SPRITE_DIM
                         my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = 'o'
-                        objects_collected += 1
+                        #pygame.mixer.Sound("sounds/collect.m4a").play()
+                        Agent.objects_collected += 1
                     elif my_maze.matrix[self.mg_pos_y - 1][self.mg_pos_x] == 'f':
                         self.mg_pos_y -= 1
-                        self.mg_y = self.mg_pos_y * Constants().SPRITE_DIM
+                        self.mg_y = self.mg_pos_y * Constants.SPRITE_DIM
                         pass
-                        if objects_collected == 3:
-                            pass
-                            # Murdoc meurt et le jeu s'arrête, MacGyver gagne.
-                        #else:
-                            # MacGyver meurt et le jeu s'arrête.
+                        if Agent.objects_collected == 3:
+                            print("Victoire")
+                            #pygame.mixer.Sound("sounds/freedom.m4a").play()
+                        else:
+                            print("Perdu")
+                            #pygame.mixer.Sound("sounds/failure.m4a").play()
                     else:
                         self.mg_pos_y -= 1
-                        self.mg_y = self.mg_pos_y * Constants().SPRITE_DIM
-                #else:
-                    #send the sound wall.wav when hitting a wall.
-            #else:
-                #send the sound wall.wav when hitting the border of the Maze.
+                        self.mg_y = self.mg_pos_y * Constants.SPRITE_DIM
+                else:
+                    #pygame.mixer.Sound("sounds/wall.m4a").play()
+                    pass
+            else:
+                #pygame.mixer.Sound("sounds/wall.m4a").play()
+                pass
         # Move down
         if direction == 'down':
-            if self.mg_pos_y < (Constants().SPRITE_NUM - 1):
+            if self.mg_pos_y < (Constants.SPRITE_NUM - 1):
                 if my_maze.matrix[self.mg_pos_y + 1][self.mg_pos_x] != 'w':
                     if my_maze.matrix[self.mg_pos_y + 1][self.mg_pos_x] == '1':
                         self.mg_pos_y += 1
-                        self.mg_y = self.mg_pos_y * Constants().SPRITE_DIM
+                        self.mg_y = self.mg_pos_y * Constants.SPRITE_DIM
                         my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = 'o'
-                        objects_collected += 1
+                        #pygame.mixer.Sound("sounds/collect.m4a").play()
+                        Agent.objects_collected += 1
                     elif my_maze.matrix[self.mg_pos_y + 1][self.mg_pos_x] == 'f':
                         self.mg_pos_y += 1
-                        self.mg_y = self.mg_pos_y * Constants().SPRITE_DIM
+                        self.mg_y = self.mg_pos_y * Constants.SPRITE_DIM
                         pass
-                        if objects_collected == 3:
-                            pass
-                            # Murdoc meurt et le jeu s'arrête, MacGyver gagne.
-                        #else:
-                            # MacGyver meurt et le jeu s'arrête.
+                        if Agent.objects_collected == 3:
+                            print("Victoire")
+                            #pygame.mixer.Sound("sounds/freedom.m4a").play()
+                        else:
+                            print("Perdu")
+                            #pygame.mixer.Sound("sounds/failure.m4a").play()
                     else:
                         self.mg_pos_y += 1
-                        self.mg_y = self.mg_pos_y * Constants().SPRITE_DIM
-                #else:
-                    #send the sound wall.wav when hitting a wall.
-            #else:
-                #send the sound wall.wav when hitting the border of the Maze.
-        print(objects_collected)
-
-
+                        self.mg_y = self.mg_pos_y * Constants.SPRITE_DIM
+                else:
+                    #pygame.mixer.Sound("sounds/wall.m4a").play()
+                    pass
+            else:
+                #pygame.mixer.Sound("sounds/wall.m4a").play()
+                pass
