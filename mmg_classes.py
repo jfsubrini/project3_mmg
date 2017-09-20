@@ -90,11 +90,14 @@ class Agent:
     def __init__(self, image_mg, my_maze):
         """ Constructor to create MacGyver : loading and positioning. """
         self.image = pygame.image.load(image_mg).convert_alpha()
-        # MacGyver's position in the Maze in sprites and in pixels.
-        self.mg_pos_y = 0 ###my_maze.matrix.index('j')
-        self.mg_pos_x = 0 ###my_maze.matrix.index(index('j'))
-        self.mg_x = self.mg_pos_x * Constants.SPRITE_DIM
-        self.mg_y = self.mg_pos_y * Constants.SPRITE_DIM
+        # Searching for the 'j' position in the Maze (MacGyver's place)
+        for i in range(len(my_maze.matrix)):
+            if 'j' in my_maze.matrix[i]:
+                # MacGyver's position in the Maze in sprites and in pixels.
+                self.mg_pos_y = i
+                self.mg_pos_x = my_maze.matrix[i].index('j')
+                self.mg_x = self.mg_pos_x * Constants.SPRITE_DIM
+                self.mg_y = self.mg_pos_y * Constants.SPRITE_DIM
 
     def move(self, direction, my_maze):
         """ Method for MacGyver's moves. """
