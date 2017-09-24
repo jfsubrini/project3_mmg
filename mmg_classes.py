@@ -71,7 +71,7 @@ class Maze:
 class Object:
     """ Class to create the three objects for MacGyver to collect. """
 
-    # Number of objects created.
+    # Number of created objects.
     number = 0 # Class variable to count the number of objects created.
 
     def __init__(self, image_file, my_maze):
@@ -81,13 +81,14 @@ class Object:
         # Find a place at random, in the Maze, for the needle, the tube and the potion.
         num = 0
         while num < 1: # One iteration to create only one "1" in the matrix for each instance.
+            # Creating the positional attributs x and y for the tuple.
             # Using the random module, find a random integer for x and y.
             self.x = random.randint(0, len(my_maze.matrix) - 1) # Number not higher than the...
             self.y = random.randint(0, len(my_maze.matrix) - 1) # items in each line in the maze.
             # The random tuple (x, y) representing the position of the object...
             # must point an open place in the maze (i.e. 'o'). Otherwise, starts another iteration.
             if my_maze.matrix[self.y][self.x] == 'o': # When the place in the maze is empty...
-                my_maze.matrix[self.y][self.x] = '1' # the object ("1") can be put.
+                my_maze.matrix[self.y][self.x] = '1' # the object ("1") can be put instead of "o".
                 num += 1 # Enough object for one instance (only 1, than the iteration stops).
                 Object.number += 1 # A new object is created.
 
@@ -104,11 +105,12 @@ class Agent:
         # Searching for the 'j' position in the Maze (MacGyver's place at the start of the game).
         for i in range(len(my_maze.matrix)):
             if 'j' in my_maze.matrix[i]: # When the place of 'j' is found in the matrix then...
+                # Creating the positional attributs in sprite and in pixels.
                 # MacGyver's position in the Maze in sprites and in pixels.
                 self.mg_pos_y = i # list index in the matrix, corresponding to the line number (y).
                 self.mg_pos_x = my_maze.matrix[i].index('j') # index of 'j' in that list (x).
-                self.mg_x = self.mg_pos_x * Constants.SPRITE_DIM # X position in pixels.
-                self.mg_y = self.mg_pos_y * Constants.SPRITE_DIM # Y position in pixels.
+                self.mg_x = self.mg_pos_x * Constants.SPRITE_DIM # x position in pixels.
+                self.mg_y = self.mg_pos_y * Constants.SPRITE_DIM # y position in pixels.
 
     def move(self, direction, my_maze):
         """ Method for MacGyver's moves. """
@@ -149,10 +151,10 @@ class Agent:
                 # Sending the sound freedom.wav for MacGyver's victory.
                 Constants.FREEDOM_SOUND.play()
                 # Murdoc is put to sleep and disappears, MacGyver wins.
-                my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = 'a' # Adds 'a' item in the matrix.
+                my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = 'a' # Put 'a' for 'f' in the matrix.
             else: # MacGyver forgot to collect 1, 2 or 3 objects.
                 # MacGyver dies and disappear, Murdoc stays and wins.
-                my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = '2' # Adds '2' item in the matrix.
+                my_maze.matrix[self.mg_pos_y][self.mg_pos_x] = '2' # Put '2' for 'f' in the matrix.
                 # Sending the sound death.wav for MacGyver's failure.
                 Constants.DEATH_SOUND.play()
 

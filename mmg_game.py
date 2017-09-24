@@ -18,7 +18,7 @@ Python's Scripts
 Files : mmg_game.py, mmg_classes.py, maze_1,
         and 9 images, 4 sounds and one music.
 
-Copyright Jean-François Subrini, student DA Python at OpenClassrooms.
+Copyright Jean-François Subrini, student DA Python at OpenClassrooms, 24/09/2017.
 
 """
 
